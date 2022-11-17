@@ -1,0 +1,135 @@
+===============================================================================
+
+                            Tema MN 2021
+                    Interpolare aplicata pe imagini
+                        Elev : David Mihalcenco
+
+===============================================================================
+
+Acest READ_ME contine informatii despre cum a fost structurata Tema
+
+===============================================================================
+
+1.Nearest-neighbour:
+    In functia nn_2x2 
+
+        Am initializat matricea out cu zerouri cu ajutorul comenzii zeros.
+        Cu ajutorul comenzii round am aflat cel mai aproape pixel din imagine.
+
+    In functia nn_2x2_RGB
+
+        Am extras pe rand fiecare canal din imagine , rosu fiind 1 , verde fiind
+        2 , si albastru 3.
+        Dupa am aplicat functia de mai sus pentru fiecare din canale.
+        Si am format imaginea finala cu ajutorul functiei cat.
+
+    In functia nn_resize
+
+        Am facut cast marticei I la double cu ajutorul functiei cast.
+        Asa cum s-a zis in conditie am schimbat pe s_x si s_y.
+        Am definit matricea de transformare care a fost data in enuntul temei.
+        Am aflat inversul ei cu ajutorul functiei inv.
+        Am aplicat transformarea inversa pentru x si y , si am primit un vector
+        din 2 elemente , am extras din el x_p care era pe prima pozitie , si x_y 
+        care este pe a 2 pozitie.
+        Am trecut pe x_p si y_p la sistemul de coordonate de la 0 la n facut ++ 
+        pentru fiecare.
+        Dupa am aflat cel mai apropiat vecin fix ca in functia nn_2x2.
+        Si am calculat valoarea finala a pixelului.
+        La urma am folosit functia cast pentru a converti matricea finala la uint8.
+
+    In functia nn_resize_RGB
+        
+        Am facut acelasi lucru ca in functia nn_2x2_RGB doar ca am
+        aplicat functia nn_resize nu nn_2x2. Si in loc de STEP avem p si q.
+    
+2.Bilinear:
+
+    In functia bilinear_coef
+
+        Am inceput cu ea deoarece aveam nevoie de ea pentru celelalte functii.
+        Am calculat matricea A , am luat o din enuntul temei.
+        Dupa am scris vectorul b care tot este dat in enuntul temei , doar ca in 
+        loc de ex: A12 = in functie va fi f(y2 , x1) 2 fiind y2 si 1 fiind x1 doar 
+        ca le schimbam cu locul.
+        Si am calculat coeficientii impartind matricea A la vectorul b.
+    
+    In functia surrounding_points
+
+        Am calculat pe x1 , y1 ,x2 si y2 cu ajutorul functiei floor care intoarce
+        cel mai apropiat numar intreg nu mai mare ca el de ex daca x va fi 2,6 ea va
+        intoarce 2.
+        x2 si y2 fiind x1+1 si y1 +1 
+        Mai jos am facut un if care verifica daca y2 este pe ultima linie si daca el 
+        este in afara matricei face y2--.
+        Analog pentru x .
+    
+    In functia bilinear_2x2
+
+        Am facut cast lui f la double am calculat coeficientii cu functia de mai sus
+        in urma careia primim un vector de 4 elemente am extras viecare element
+        primind a0 , a1, a2 , a3.
+        Am initializat rezultatul out cu o matrice de 0 .
+        Si am calculat valoarea pixelului cu ajutorul formulei din enuntul temei.
+
+    Functiile RGB 
+
+        In toate extrag canalele doar ca aplic functii diferite este una si aceeasi in
+        toate 3 functii.
+
+    In functia bilinear_resize
+
+        Am definit matricea de transformare am calculat inversa ei , am aplicat transformare
+        inversa pentru x si y , din rezultat am extra pe x_p si x_y .
+        Am aflat punctele ce inconjoara punctul xp si xy cu ajutorul functiei 
+        surrounding_points afland pe x1 y1 x2 si y2.
+        Am calculat coeficientii de Interplare obtinant 4 coeficientii.
+        Si am calculat valoarea interpolara a pixelului x si y doar ca am pus la fiecare + 1
+        deoarece le am adus la coordonatele de la 0 la n.
+    
+    In functia bilinear_rotate 
+
+        Am calculat cos si sin de rotation_angle.
+        Am initializat matricea de transformare doar ca acum cu cos si sin.
+        Am calculat inversa ei.
+        Asa cum s-a cerut in problema am facut 4 if-uri care in caz ca x_p si y_p 
+        se afla inafara imaginii continua.
+        Am aflat punctele ce inconjoara punctul xp si yp cu ajutorul functiei 
+        surrounding_points.
+        Am calculat coeficientii si am aflat valoarea finala a pixelului fix ca in functia
+        de mai sus.
+
+3.Bicubic:
+
+    In functia bicubic_coef
+
+        Am scris matricile intermediare , le-am luat din enuntul problemei .
+        La matricea D in enuntul problemei nu avem Ix Iy sau Ixy acolo avem 
+        fx fy si fxy aceastea fiind acei I.
+        Am convertit matricile la double cu ajutorul functiei cast.
+        Si am aflat matricea finala inmultind toate matricile intermediare.
+
+    Functia surrounding_points
+
+        Este fix ca aceea de mai sus.
+    
+    Functia precalc_d
+
+        In aceasta functia am folosit 3 functii care le-am definit pe fiecare aparte
+        in care am calculat derivata pentru x y si xy care le-am luat din enuntul temei.
+        Am calculat matricea cu derivate pentru fiecare.
+    
+    In functia bicubic_resize
+
+        Am facut cast lui I.
+        Fix ca in celelalte functii resize am definit matricea de transformare, am aflat
+        inversa ei. 
+        Am precalculat derivatele cu ajutorul functiei definite precalc_d
+        Dupa am gasit punctele ce inconjoara pe x si y cu ajutorul functiei surrounding_points
+        Am calculat coeficientii de interpolare si am calculat valoarea de Interpolare
+        a pixelului. 
+
+    In functia bicubic_resize_RGB
+
+        Am facut fix aceeasi ca in toate RGB de mai sus.
+
